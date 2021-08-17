@@ -1,0 +1,95 @@
+NAME: 'RCF_SEM_nyud_test_s'
+MODEL:
+    backbone: 'vgg16_bn'   #  'vgg16'(HED only) or 'vgg16_bn'(HED and RCF) or 'resnet50'(HED only)
+    mode: 'RCF' # 'HED' OR 'RCF' or 'BDCN'
+    pretrained: True
+    loss_balance_weight: True
+    loss_weight_list: [1,1,1,1,1,1,1] ## change dsn6 weight from 1->2 09-01 add dsn7
+    upsample_layer: 'deconv'  # 'deconv' or 'bilinear', 'github'
+    interpolate_mode: 'bilinear'  # 'bilinear' or 'nearest' if upsample_layer=='bilinear'
+    freeze_bn: True  # for batchnorm
+    freeze_bn_affine: True   # for batchnorm
+    init_mode: 'Gaussian'  # 'Gaussian' or 'xavier'
+
+    loss_func_logits: True # Default: True->false 20200915
+    loss_reduce: True  # Default: True
+    first_pad: 21  # Default: 34
+    
+    side_dilation: False
+    
+    sigmoid_attention: False #True
+    vgg_attention: False
+    boundary_weighted_attention: False
+    
+    focal_loss: False
+    change_conv5_dsn5: True
+
+    msblock: True
+    cbam: False
+    LSTM: False
+    LSTM_bu: False
+    LSTM_version: 'v1'  # adjust LSTM output
+    supervision: 'normal'
+    
+    ClsHead: False #2020-08-24
+    cls_mode: 'softmax'
+    
+TRAIN: 
+    resume: False
+    freeze_pretrained_param: False
+    
+    init_lr: 0.0001 #0.0001
+    update_method: "Adam"  # 'Adam' or 'SGD', 'Adam-sgd'
+    change_sgd_epoch: 6   # only for 'adam-sgd'
+    change_sgd_lr: 0.0001     # only for 'adam-sgd'
+  
+    fusion_train: False
+    nepoch: 20
+    lr_list: [10, 15] #[10, 15]  # use 2020-08-27
+    lr_cof: [1, 100, 0.01, 0.001]  ## [1, 100, 0.01, 0.001]
+    gamma: 1.1
+
+    fixed_input: False
+    batchsize: 1
+    num_workers: 4
+
+    update_iter: 10   # update gradients every n iters
+    disp_iter: 1000  # num of iter 1000
+    save_iter: 1
+    test_iter: 1  # num of epoch
+
+    random_seed: 555  # -1 is none
+SAVE:
+    MAT:
+        normalize: True # whether divide the max value
+    board_freq: 1
+
+DATA:
+    root: ../data
+    mean: [122.67892, 116.66877, 104.00699]
+    gt_mode: gt_part 
+    yita: 0.3
+
+    AUG: 
+        Crop500: False
+        Rotate: True
+        RandomGaussianBlur: True
+        AdjustGamma: True
+        ColorJitter: True
+        brightness: 0.3
+        contrast: 0.3
+        saturation: 0.3
+        hue: 0.1
+        HFlip: True
+        MS: True  #False 
+    
+    train_list: train_pair.lst
+    # bsd500_pascalx8_aug_train_pair.lst
+    # bsd500_pascal_train_pair.lst
+    # train_pair.lst debug.lst
+    test_list: test.lst
+
+
+
+
+
