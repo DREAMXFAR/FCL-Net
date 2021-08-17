@@ -7,44 +7,25 @@ import os,pdb,time
 #######################################################################################
 ## relative to config
 
-# config_file='standard01.yaml'
-# config_file = 'standard_BDCN.yaml'
-# config_file='standard_FPN.yaml'
+config_file = 'standard_RCF.yaml'
 
-# config_file = 'standard_NYUD.yaml'
-
-# config_file = 'standard_BIPED.yaml'
-
-# config_file = 'standard_RCF_PASCAL.yaml'
-
-# config_file = 'standard_RCF.yaml'
-
-config_file = 'standard_Multicue.yaml'
-
-# config_file = 'standard_RCF_LSTM.yaml'
-
-# config_file = 'standard_RCF_LSTM_CLS.yaml'
-
-#cluster=True
-#cluster=False
 #######################################################################################
-
 ckpt_dir = '../ckpt'
 main_dirs = [ckpt_dir]
 
-### Get job name
-with open('config/'+config_file,'r') as f:  # , encoding="gbk"
+# Get job name
+with open('config/'+config_file, 'r') as f:  # , encoding="gbk"
     lines = f.readlines()
     # lines.decode("utf8","ignore")
     job_name = lines[0][:-1].split(': ')[1][1:-1]
 
-### process config
-config=config_file.split('/')
-if len(config)==1:
+config = config_file.split('/')
+if len(config) == 1:
     filename = config[0]
     dirs = []
 else:
     dirs,filename = config[0:-1], config[-1]
+
 filename = filename.split('.')[0]
 dirs.append(filename)
 dirs.append('log')
@@ -57,14 +38,11 @@ for each_main_dir in main_dirs:
             os.mkdir( new_dir )
     print('create ckpt dir: ', each_main_dir, '/',  each_dir)
 
-
 time.ctime()
 cur_time = time.strftime('_%b%d_%H-%M-%S') 
 
 #######################################################################################
-
-
-### run script
+# run script
 cmd = '''\
     LOG="''' + ckpt_dir + '/' + '/'.join(dirs) + '/' + filename  + '''-`date +'%Y-%m-%d_%H-%M-%S'`_train" 
     echo $LOG ;

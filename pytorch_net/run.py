@@ -19,7 +19,6 @@ parser.add_argument('--mode', dest='mode', required=True, help='path to config f
 parser.add_argument('--time', dest='time', required=True, help='path to config file')
 args = parser.parse_args()
 
-#print(args)
 cfg_file = args.cfg
 print('cfg_file: ', cfg_file)
 
@@ -50,8 +49,6 @@ else:
 
 if args.mode=='train':
     hed_pipeline.train()
-    #import cProfile
-    #cProfile.run( "hed_pipeline.train()", filename="a.out" )
 elif args.mode == 'test_ms': 
     param_path = r'/path/to/parameters'
     hed_pipeline.test_ms(param_path=param_path, mode='s')

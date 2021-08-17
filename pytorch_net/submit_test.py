@@ -35,17 +35,13 @@ for each_main_dir in main_dirs:
 time.ctime()
 cur_time = time.strftime('_%b%d_%H-%M-%S') 
 #######################################################################################
-
-
-### run script
+# run script
 cmd = '''\
     LOG="''' + ckpt_dir + '/' + '/'.join(dirs) + '/' + filename  + '''-`date +'%Y-%m-%d_%H-%M-%S'`_test";
     echo $LOG ;
     python run.py --mode test_ms --cfg ''' +  config_file + ''' --time ''' + cur_time + '''$2>&1 | tee ${LOG}
 '''
-# python run.py --mode test_merge --cfg ''' +  config_file + ''' --time ''' + cur_time + '''$2>&1 | tee ${LOG}
 
-# python run.py --mode test --cfg ''' +  config_file + '''$2>&1 | tee ${LOG}
 os.system(cmd)
 
 

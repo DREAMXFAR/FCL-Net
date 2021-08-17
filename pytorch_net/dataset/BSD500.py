@@ -30,22 +30,6 @@ class BSD500Dataset():
                 self.all_path_list.append( cur_pair )
         print('in data_loader: Train data preparation done')
 
-        '''
-        ### transformer
-        mean = [float(item) / 255.0 for item in cfg.DATA.mean]
-        std = [1,1,1]
-        
-        self.transform = transforms.Compose([
-                        transforms.ToTensor(),
-                        transforms.Normalize(mean,std)
-                    ])
-            
-
-        self.targetTransform = transforms.Compose([
-                            transforms.ToTensor()
-                          ])
-        '''
-
     def mytransfrom(self, img, gt):
         '''
         input:  img,gt, PIL image
@@ -71,7 +55,7 @@ class BSD500Dataset():
             if random.random()>0.5:
                 img = img.filter(ImageFilter.GaussianBlur(radius=random.random()))
 
-        ### ColorJitterUG:
+        # ColorJitterUG:
         if self.cfg.DATA.AUG.ColorJitter:
             color_jitter = transforms.ColorJitter(brightness = self.cfg.DATA.AUG.brightness,
                                                   contrast = self.cfg.DATA.AUG.contrast,
@@ -80,8 +64,7 @@ class BSD500Dataset():
             color_jitter_transform = color_jitter.get_params(color_jitter.brightness, color_jitter.contrast,
                                                              color_jitter.saturation, color_jitter.hue)
             img = color_jitter_transform(img)
-        
-        
+
         if self.cfg.DATA.AUG.AdjustGamma:
             if random.random() < 0.5:
                 # gamma [0.25, 4]
@@ -92,8 +75,7 @@ class BSD500Dataset():
             if random.random() > 0.5:
                 img = F.hflip(img)
                 gt = F.hflip(gt)
-        
-        # complementation on 20200929
+
         # multi-scale training
         if self.cfg.DATA.AUG.MS:
             ms_factor = random.random()
@@ -101,24 +83,21 @@ class BSD500Dataset():
             if  ms_factor > 0.70: # scale:2
                 resize_h = int(h * 1.5)
                 resize_w = int(w * 1.5)
-                #print('resize_factor = 2')
             elif ms_factor > 0.40: # scale:0.5
                 resize_h = int(h / 2)
                 resize_w = int(w / 2)
-                #print('resize_factor = 0.5')
             else:
                 resize_h = int(h)
                 resize_w = int(w)
-                #print('resize_factor = 1.0')
-            
+
             img = F.resize(img, (resize_h, resize_w), Image.BILINEAR)  # default: interpolation=Image.BILINEAR
             gt = F.resize(gt, (resize_h, resize_w), Image.NEAREST)
 
-        ### ToTensor
+        # ToTensor
         img = F.to_tensor(img)
         gt = F.to_tensor(gt)
 
-        ### Normalization
+        # Normalization
         mean = [float(item) / 255.0 for item in self.cfg.DATA.mean]
         std = [1,1,1]
 
@@ -126,7 +105,6 @@ class BSD500Dataset():
         img = normalizer(img)   
     
         return img, gt
-        
 
     def __getitem__(self, idx):
         img_path, gt_path = [ '/'.join([self.rootdir, item]) for item in self.all_path_list[idx] ]
@@ -135,9 +113,6 @@ class BSD500Dataset():
         gt  = Image.open(gt_path).convert('L')
 
         img_t, gt_t = self.mytransfrom(img, gt)
-        
-        # print('img max:{}, min:{}'.format(torch.max(img_t), torch.min(img_t)))
-        # print('gt max:{}, min:{}'.format(torch.max(gt_t), torch.min(gt_t)))
 
         if self.cfg.DATA.gt_mode=='gt_half':
             gt_t[gt_t>=0.5] = 1 
@@ -147,28 +122,20 @@ class BSD500Dataset():
             gt_t[gt_t>=yita] = 1 
         elif self.cfg.DATA.gt_mode == 'gt_all':
             gt_t[gt_t>0.01] = 1
-        
-        
+
         return img_t, gt_t
 
-    
     def __len__(self):
         return len(self.all_path_list)
 
 
- 
-
-
-
-
 ####################################################################################################
-
 class BSD500DatasetTest():
     def __init__(self, cfg):
         self.rootdir = cfg.DATA.root
         self.train_list = cfg.DATA.test_list  
         
-        ### data 
+        # data
         self.all_path_list = []
         with open('/'.join([self.rootdir, self.train_list]), 'r') as f:
             lines = f.readlines()
@@ -177,14 +144,13 @@ class BSD500DatasetTest():
                 self.all_path_list.append( line )
         print('in data_loader: Test data preparation done')
 
-        ### transformer
+        # transformer
         mean = [float(item) / 255.0 for item in cfg.DATA.mean]
         std = [1,1,1]
         self.transform = transforms.Compose([
                         transforms.ToTensor(),
                         transforms.Normalize(mean,std)
                     ])
-        
 
     def __getitem__(self, idx):
         img_path = '/'.join([self.rootdir, self.all_path_list[idx]])
@@ -192,11 +158,9 @@ class BSD500DatasetTest():
 
         img = Image.open(img_path).convert('RGB')
         img_t = self.transform(img)
-        
-        
+
         return (img_t, img_filename)
 
-    
     def __len__(self):
         return len(self.all_path_list)
 

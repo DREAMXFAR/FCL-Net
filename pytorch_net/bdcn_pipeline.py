@@ -1,36 +1,19 @@
+import os
+import time
+import cv2
+import re
+import numpy as np
+
 import torch
 import torchvision.utils as vutils
-import torchvision.transforms.functional as transform
-
-# from fastprogress import master_bar, progress_bar
-
-import numpy as np
-import time
-from dataset.BSD500 import *
-from models.HED import HED
-from models.RCF import RCF
-from models.BDCN import BDCN
-from models.RCF_bilateral_attention import RCF_bilateral_attention
-import torch.nn as nn
 import torch.nn.functional as F
+
+from dataset.BSD500 import *
+from models.BDCN import BDCN
 from utils import AverageMeter
-from torch.optim import lr_scheduler
-import logging
-from PIL import Image, ImageFilter
-# from logger import Logger
 from tensorboardX import SummaryWriter
-import scipy.io
-import cv2
-
-from datetime import datetime
-import pdb
-import re
-
 from DiceLoss import SoftDiceLoss
 from DiceLoss import re_Dice_Loss
-
-
-# logger = Logger('./logs')
 
 
 class BDCNPipeline():
@@ -50,8 +33,7 @@ class BDCNPipeline():
 
         self.writer.add_text('cfg', str(self.cfg))
 
-        ######################### Dataset ################################################3
-
+        # ######################## Dataset ################################################3
         dataset = BSD500Dataset(self.cfg)
         self.data_loader = torch.utils.data.DataLoader(
             dataset,
@@ -66,9 +48,7 @@ class BDCNPipeline():
             batch_size=1,
             shuffle=False,
             num_workers=self.cfg.TRAIN.num_workers)
-
-        ######################### Model ################################################3
-
+        # ######################## Model ################################################3
         self.model = BDCN(self.cfg, self.writer)
         self.model = self.model.cuda()
 
@@ -81,8 +61,7 @@ class BDCNPipeline():
             # self.loss_function = SoftDiceLoss()
             self.loss_function = F.binary_cross_entropy
 
-        ######################### Optimizer ################################################3
-
+        # ######################## Optimizer ################################################3
         init_lr = self.cfg.TRAIN.init_lr
         self.lr_cof = self.cfg.TRAIN.lr_cof
         
@@ -219,8 +198,7 @@ class BDCNPipeline():
 
                 self.loss.backward()
 
-                ############################## Update Gradients ########################################
-
+                # ############################# Update Gradients ########################################
                 if (cur_iter % self.cfg.TRAIN.update_iter) == 0:
                     self.optim.step()
                     self.optim.zero_grad()
@@ -243,7 +221,7 @@ class BDCNPipeline():
 
                     print(print_str)
 
-                    ######## show loss
+                    # show loss
                     self.writer.add_scalar('loss/loss1', self.loss1.item(), cur_iter)
                     self.writer.add_scalar('loss/loss2', self.loss2.item(), cur_iter)
                     self.writer.add_scalar('loss/loss3', self.loss3.item(), cur_iter)
@@ -259,14 +237,13 @@ class BDCNPipeline():
 
                     self.tensorboard_summary(cur_iter)  # show loss and weights
 
-            # added by xwj, 2020-08-27
             if self.cfg.TRAIN.update_method=='SGD':  
                 self.StepLR(self.optim, self.cfg.TRAIN.lr_list, (cur_epoch+1) )
             
-            # Adam lr decay added by xwj, 2020-08-27
+            # Adam lr decay
             if self.cfg.TRAIN.update_method=='Adam' or 'Adam_fuse': 
                 self.StepLR(self.optim, self.cfg.TRAIN.lr_list, (cur_epoch+1) )
-                
+
             # Test
             if ((cur_epoch + 1) % self.cfg.TRAIN.test_iter) == 0:
                 self.test(cur_epoch)
@@ -283,7 +260,7 @@ class BDCNPipeline():
 
         self.writer.close()
 
-    # add to do reduce lr in Adam 2020-08-27
+    # add to do reduce lr in Adam
     def StepLR(self, optimizer, lr_list, cur_epoch):
 
         if cur_epoch not in lr_list:
@@ -295,10 +272,8 @@ class BDCNPipeline():
     
             # self.writer.add_text('LR', 'lr = ' + str(lr) + ' at step: ' + str(cur_epoch) )
 
-
     def tensorboard_summary(self, cur_epoch):
-
-        ######## weight
+        # weight
         print('weight: ')
         print(self.model.fuse.weight.shape)
         print(self.model.fuse.weight)
@@ -345,11 +320,8 @@ class BDCNPipeline():
         # Forward
         for ind, item in enumerate(self.data_test_loader):
             (data, img_filename) = item
-            # (data, target) = item
             data = data.cuda()
 
-            # img_filename = '100075.png'
-            # print(img_filename)
             dsn_list = self.model(data)
 
             input_show = vutils.make_grid(data, normalize=True, scale_each=True)
@@ -358,7 +330,7 @@ class BDCNPipeline():
                     dsn_list[i] = torch.sigmoid(dsn_list[i])
 
             # results = dsn_list[-1]
-            # save dsn1+dsn11 dsn2+dsn22 dsn3+dsn33 dsn4+dsn44 dsn5+dsn55, fuse add by xwj 20200-10-05
+            # save dsn1+dsn11 dsn2+dsn22 dsn3+dsn33 dsn4+dsn44 dsn5+dsn55, fuse
             # return [p1_1, p2_1, p3_1, p4_1, p5_1, p1_2, p2_2, p3_2, p4_2, p5_2, fuse]
             [p1_1, p2_1, p3_1, p4_1, p5_1, p1_2, p2_2, p3_2, p4_2, p5_2, fuse] = dsn_list
             results = [(p1_1+p1_2)/2.0, (p2_1+p2_2)/2.0, (p3_1+p3_2)/2.0, (p4_1+p4_2)/2.0, (p5_1+p5_2)/2.0, fuse]
@@ -410,19 +382,14 @@ class BDCNPipeline():
         for ind, each_dsn in enumerate(results):
             each_dsn = each_dsn.data.cpu().numpy()
             each_dsn = np.squeeze(each_dsn)
-            
-            #scipy.io.savemat(os.path.join(self.log_dir, img_filename),dict({'edge': each_dsn / np.max(each_dsn)}),appendmat=True)
 
-            #print( type(each_dsn) )
-            # add additional suffix '.mat'
             #save_path = os.path.join(self.log_dir, 'results_mat', str(cur_epoch),  'dsn'+str(ind+1), img_filename[0]+'.mat') # 20201013
             save_path = os.path.join(self.log_dir, 'results_mat', str(cur_epoch),  'dsn'+str(ind+1), img_filename[0]+'.png')
             
             if self.cfg.SAVE.MAT.normalize and normalize:  # false when test ms
                 # print(np.max(each_dsn))
                 each_dsn = each_dsn / np.max(each_dsn)
-            
-            # scipy.io.savemat(save_path, dict({'edge': each_dsn}))
+
             cv2.imwrite(save_path, each_dsn*255)
 
     def makedir(self, path):
@@ -500,11 +467,7 @@ class BDCNPipeline():
             
             a.append(ms_list[10])
             self.save_mat(a, img_filename, 0)
-            #print('weight: ')
-            #print(self.model.new_score_weighting.weight)
-            #print(self.model.new_score_weighting.bias)  # is changing
-            
-            # self.save_mat(ms_list, img_filename, 0)
+
             
     def test_merge(self, param_path=r'../ckpt/standard01/log/RCF_vgg16_bn_bsds_pascal_Adam_savemodel_Feb14_10-33-52/epoch_12.pth'):
         # load model parameters
@@ -572,10 +535,6 @@ class BDCNPipeline():
                 merge_ms = (avg_ms + ms_list[10])/2
 
                 ms_list.append(merge_ms)
-
-            # print('weight: ')
-            # print(self.model.new_score_weighting.weight)
-            # print(self.model.new_score_weighting.bias)  # is changing
 
             self.save_mat(ms_list, img_filename, 0, test=True)
 
