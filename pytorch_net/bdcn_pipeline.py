@@ -12,8 +12,6 @@ from dataset.BSD500 import *
 from models.BDCN import BDCN
 from utils import AverageMeter
 from tensorboardX import SummaryWriter
-from DiceLoss import SoftDiceLoss
-from DiceLoss import re_Dice_Loss
 
 
 class BDCNPipeline():
