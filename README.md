@@ -1,6 +1,6 @@
 # FCL-Net
 
-> This is a pytorch implementation of our work, 2021, version 1.0.
+> This is a pytorch implementation of our FCL-Net, 2021, version 1.0.
 
 ## Performance
 
@@ -8,7 +8,7 @@
 
 |                (a)                 |                   (b)                    |
 | :--------------------------------: | :--------------------------------------: |
-| ![compare](.\examples\compare.png) | ![compare](.\examples\stage-compare.png) |
+| ![compare](./examples/compare.png) | ![compare](./examples/stage-compare.png) |
 
 > We report ODS and OIS for comparison with other previous impressive works.
 
@@ -105,7 +105,7 @@
 
 ## Reference
 
-[1]. Our implementation is greatly base on original project by [chongruo](https://github.com/chongruo/pytorch-HED);
+[1]. Our implementation is based on original project by [chongruo](https://github.com/chongruo/pytorch-HED);
 
 [2]. When doing experiments, we also refer to wonderful projects of [liu](https://github.com/yun-liu/rcf) and [he](https://github.com/pkuCactus/BDCN); we also thank for their wonderful work and help;
 
