@@ -237,6 +237,86 @@ class FuseLayer(nn.Module):
                     m.bias.data.zero_()
 
 
+class PyramidConv(nn.Module):
+    def __init__(self, c_in, c_out=21, rate=4):
+        super(PyramidConv, self).__init__()
+        self.c_out = c_out
+        self.rate = rate
+        # conv3x3
+        self.conv = nn.Conv2d(c_in, 32, 3, stride=1, padding=1)
+        self.relu = nn.ReLU(inplace=True)
+        #  dilation rate = 0
+        self.conv0 = nn.Conv2d(32, 32, 3, stride=1, padding=1)
+        self.relu0 = nn.ReLU(inplace=True)
+        #  dilation rate = 1
+        dilation = self.rate*1 if self.rate >= 1 else 1
+        self.conv1 = nn.Conv2d(32, 32, 3, stride=1, dilation=dilation, padding=dilation)
+        self.relu1 = nn.ReLU(inplace=True)
+        #  dilation rate = 2
+        dilation = self.rate*2 if self.rate >= 1 else 1
+        self.conv2 = nn.Conv2d(32, 32, 3, stride=1, dilation=dilation, padding=dilation)
+        self.relu2 = nn.ReLU(inplace=True)
+        #  dilation rate = 3
+        dilation = self.rate*3 if self.rate >= 1 else 1
+        self.conv3 = nn.Conv2d(32, 32, 3, stride=1, dilation=dilation, padding=dilation)
+        self.relu3 = nn.ReLU(inplace=True)
+
+        self.conv_final = nn.Conv2d(32, self.c_out, (1, 1), stride=1)
+
+        self._initialize_weights()
+
+    def forward(self, x):
+        o = self.relu(self.conv(x))
+        o0 = self.relu0(self.conv0(o))
+        o1 = self.relu1(self.conv1(o))
+        o2 = self.relu2(self.conv2(o))
+        o3 = self.relu3(self.conv3(o))
+        out = o + o0 + o1 + o2 + o3
+        out_final = self.conv_final(out)
+        return out_final
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                m.weight.data.normal_(0, 0.01)
+                if m.bias is not None:
+                    m.bias.data.zero_()
+
+
+class AAM(nn.Module):
+    def __init__(self, in_planes, ratio=4):
+        super(AAM, self).__init__()
+
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
+
+        self.fc1 = nn.Conv2d(in_planes, in_planes // ratio, 1, bias=False)
+        self.relu1 = nn.ReLU()
+        self.fc2 = nn.Conv2d(in_planes // ratio, in_planes, 1, bias=False)
+
+        self.sigmoid = nn.Sigmoid()
+
+        self._initialize_weights()
+
+    def forward(self, cur_Feature, add_Feature):
+        # channel attention
+        avg_out = self.fc2(self.relu1(self.fc1(self.avg_pool(cur_Feature))))
+        max_out = self.fc2(self.relu1(self.fc1(self.max_pool(cur_Feature))))
+        out = avg_out + max_out
+
+        cur_Feature = torch.mul(cur_Feature, self.sigmoid(out))
+        refined_feature = cur_Feature + add_Feature
+
+        return refined_feature
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                m.weight.data.normal_(0, 0.01)
+                if m.bias is not None:
+                    m.bias.data.zero_()
+
+
 if __name__ == "__main__":
     cbam = CBAM(21)
     a = torch.ones([1, 21, 4, 4])
