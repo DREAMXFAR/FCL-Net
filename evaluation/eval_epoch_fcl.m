@@ -1,4 +1,4 @@
-function eval_epoch_rcf_png(exp_dir, epoch) 
+function eval_epoch_fcl(exp_dir, epoch) 
     addpath('matlab_code/edges/')
     addpath('matlab_code/edges/my')
     addpath('matlab_code/edges/models')
@@ -63,13 +63,7 @@ function eval_epoch_rcf_png(exp_dir, epoch)
     gtDir = 'data/BSR/BSDS500/data/groundTruth/test';
     
     dst = 0.0075;
-    
-    resDir6 = fullfile(save_root, 'dsn6');
-    [ODS_F_fuse6, ~, ~, ~, OIS_F_fuse6, ~, ~, AP_fuse6, ~] = edgesEvalDir('resDir',resDir6,'gtDir',gtDir, 'thin', 1, 'pDistr',{{'type','parfor'}},'maxDist',dst);
-
-    resDir7 = fullfile(save_root, 'dsn7');
-    [ODS_F_fuse7, ~, ~, ~, OIS_F_fuse7, ~, ~, AP_fuse7, ~] = edgesEvalDir('resDir',resDir7,'gtDir',gtDir, 'thin', 1, 'pDistr',{{'type','parfor'}},'maxDist',dst);
-    
+      
     resDir2 = fullfile(save_root, 'dsn2');
     [ODS_F_fuse2, ~, ~, ~, OIS_F_fuse2, ~, ~, AP_fuse2, ~] = edgesEvalDir('resDir',resDir2,'gtDir',gtDir, 'thin', 1, 'pDistr',{{'type','parfor'}},'maxDist',dst);
     
@@ -85,7 +79,11 @@ function eval_epoch_rcf_png(exp_dir, epoch)
 %     resDir5 = fullfile(save_root, 'dsn5');
 %     [ODS_F_fuse5, ~, ~, ~, OIS_F_fuse5, ~, ~, AP_fuse5, ~] = edgesEvalDir('resDir',resDir5,'gtDir',gtDir, 'thin', 1, 'pDistr',{{'type','parfor'}},'maxDist',dst);
     
-     % add fusion 0425
+    resDir6 = fullfile(save_root, 'dsn6');
+    [ODS_F_fuse6, ~, ~, ~, OIS_F_fuse6, ~, ~, AP_fuse6, ~] = edgesEvalDir('resDir',resDir6,'gtDir',gtDir, 'thin', 1, 'pDistr',{{'type','parfor'}},'maxDist',dst);
+
+    resDir7 = fullfile(save_root, 'dsn7');
+    [ODS_F_fuse7, ~, ~, ~, OIS_F_fuse7, ~, ~, AP_fuse7, ~] = edgesEvalDir('resDir',resDir7,'gtDir',gtDir, 'thin', 1, 'pDistr',{{'type','parfor'}},'maxDist',dst);
 
     result_txt_path = fullfile(root_root, exp_dir, 'result.txt');
     if exist(result_txt_path)==2
