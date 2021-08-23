@@ -20,22 +20,22 @@
 
 > We report ODS and OIS for comparison with other previous impressive works. Moreover, we reproduce HED, RCF and BDCN, and report the performance compared with the original paper.
 
-| **Method**  |  **ODS**  | **OIS** | ODS(original paper) | OIS(original paper) |
-| :---------: | :-------: | :-----: | :-----------------: | :-----------------: |
-|    *HED     |   0.790   |  0.805  |        0.788        |        0.808        |
-|    *RCF     |   0.797   |  0.811  |        0.798        |        0.815        |
-|    *RCF+    |   0.807   |  0.823  |        0.806        |        0.823        |
-|   *RCF++    |   0.813   |  0.829  |        0.811        |        0.830        |
-|    *BDCN    |   0.807   |  0.821  |        0.806        |        0.826        |
-|   *BDCN+    |   0.810   |  0.829  |        0.820        |        0.838        |
-|   *BDCN++   |   0.819   |  0.837  |        0.828        |        0.844        |
-|   RCF-SEM   |   0.799   |  0.815  |          —          |          —          |
-|  RCF-SEM+   |   0.808   |  0.826  |          —          |          —          |
-|  RCF-SEM++  |   0.814   |  0.833  |          —          |          —          |
-|  **Ours**   |   0.807   |  0.822  |          —          |          —          |
-| **Ours-MS** | **0.816** |  0.833  |          —          |          —          |
-|  **Ours+**  | **0.815** |  0.834  |          —          |          —          |
-| **Ours++**  | **0.826** |  0.845  |          —          |          —          |
+| **Method**  |  **ODS**  |  **OIS**  | ODS(original paper) | OIS(original paper) |
+| :---------: | :-------: | :-------: | :-----------------: | :-----------------: |
+|    *HED     |   0.790   |   0.805   |        0.788        |        0.808        |
+|    *RCF     |   0.797   |   0.811   |        0.798        |        0.815        |
+|    *RCF+    |   0.807   |   0.823   |        0.806        |        0.823        |
+|   *RCF++    |   0.813   |   0.829   |        0.811        |        0.830        |
+|    *BDCN    |   0.807   |   0.821   |        0.806        |        0.826        |
+|   *BDCN+    |   0.810   |   0.829   |        0.820        |        0.838        |
+|   *BDCN++   |   0.819   |   0.837   |        0.828        |        0.844        |
+|   RCF-SEM   |   0.799   |   0.815   |          —          |          —          |
+|  RCF-SEM+   |   0.808   |   0.826   |          —          |          —          |
+|  RCF-SEM++  |   0.814   |   0.833   |          —          |          —          |
+|  **Ours**   | **0.807** | **0.822** |          —          |          —          |
+| **Ours-MS** | **0.816** |   0.833   |          —          |          —          |
+|  **Ours+**  | **0.815** | **0.834** |          —          |          —          |
+| **Ours++**  | **0.826** | **0.845** |          —          |          —          |
 
 
 
@@ -74,7 +74,7 @@
      standard_FCL.yaml  # for our work, FCL-Net
      ```
 
-     > This reproduced BDCN has an ODS of xxx, which is a little bit lower than original source code. 
+     > This reproduced BDCN has an ODS of 0.809, which is a little bit lower than original source code. 
 
    - submit your task;
 
@@ -85,7 +85,7 @@
 5. **Evaluation**
 
    - To evaluate the model, please refer to Testing HED part in https://github.com/s9xie/hed; 
-   - Note that you need to use Piotr's Structured Forest matlab toolbox available here https://github.com/pdollar/edges, and remember to do NMS first if needed and put codes  in `./matlab_code`;
+   - Note that you need to use Piotr's Structured Forest matlab toolbox available here https://github.com/pdollar/edges, and remember to do NMS first if needed and put files  in `./matlab_code`;
    - we provide an example here `./evaluation/eval_epoch_fcl.m` of Matlab.
 
 6. **To draw P-R curves and compare with other works**
@@ -94,14 +94,17 @@
 
 7. **Our pretrained models**.
 
-   | Model | Link |  ODS  |
-   | :---: | :--: | :---: |
-   |  HED  |      | 0.790 |
-   |  RCF  |      | 0.807 |
-   | BDCN  |      |       |
-   |  FCL  |      | 0.815 |
-
+   |     Model     |                            Link                             |  ODS  |
+   | :-----------: | :---------------------------------------------------------: | :---: |
+   |      HED      | [baiduyun](https://pan.baidu.com/s/1-ECU0zDQEwBs6pmq7DKp-A) | 0.790 |
+   |      RCF      | [baiduyun](https://pan.baidu.com/s/1IQnGh7psQk2gOZhK1_lMwg) | 0.807 |
+   |     BDCN      | [baiduyun](https://pan.baidu.com/s/1bzAeBQ_9316uic044szdnQ) | 0.809 |
+   | BDCN-official | [baiduyun](https://pan.baidu.com/s/1t7Y5_cgSf2tn8B5zsyPdmA) | 0.810 |
+   |      FCL      | [baiduyun](https://pan.baidu.com/s/10J2k6HZAGAYNDo2S9IGWrQ) | 0.815 |
    
+   > Password for baiduyun: `repr` ;
+
+
 
 ## Our Results for Comparison
 
