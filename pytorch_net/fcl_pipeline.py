@@ -54,12 +54,10 @@ class FCLPipeline():
         # ######################## Model ################################################3
         if self.cfg.MODEL.mode == 'HED':
             self.model = HED(self.cfg, self.writer)
-        elif self.cfg.MODEL.mode == 'RCF':
-            self.model = RCF(self.cfg, self.writer)
+        elif self.cfg.MODEL.mode == 'FCL' or self.cfg.MODEL.mode == 'RCF':
+            self.model = FCL(self.cfg, self.writer)
         elif self.cfg.MODEL.mode == 'BDCN':
             self.model = BDCN(self.cfg, self.writer)
-        elif self.cfg.MODEL.mode == 'RCF_bilateral_attention':
-            self.model = RCF_bilateral_attention(self.cfg, self.writer)
 
         self.model = self.model.cuda()
         # print(self.model)  # check the parameters of the model
@@ -68,8 +66,6 @@ class FCLPipeline():
         if self.cfg.MODEL.loss_func_logits:
             self.loss_function = F.binary_cross_entropy_with_logits
         else:
-            # self.loss_function = re_Dice_Loss()
-            # self.loss_function = SoftDiceLoss()
             self.loss_function = F.binary_cross_entropy
 
         # ######################## Optimizer ################################################3
@@ -133,65 +129,6 @@ class FCLPipeline():
 
         elif self.cfg.TRAIN.update_method in ['Adam', 'Adam-sgd']:
             self.optim = torch.optim.Adam(self.model.parameters(), lr=init_lr)  # weight_decay=1e-4
-
-        elif self.cfg.TRAIN.update_method == 'Adam_paper':
-            if self.cfg.MODEL.mode == 'RCF':
-                params_lr_1 = list(self.model.conv1_1.parameters()) \
-                              + list(self.model.conv1_2.parameters()) \
-                              + list(self.model.conv2_1.parameters()) \
-                              + list(self.model.conv2_2.parameters()) \
-                              + list(self.model.conv3_1.parameters()) \
-                              + list(self.model.conv3_2.parameters()) \
-                              + list(self.model.conv3_3.parameters()) \
-                              + list(self.model.conv4_1.parameters()) \
-                              + list(self.model.conv4_2.parameters()) \
-                              + list(self.model.conv4_3.parameters())
-                params_lr_100 = list(self.model.conv5_1.parameters()) \
-                                + list(self.model.conv5_2.parameters()) \
-                                + list(self.model.conv5_3.parameters())
-                params_lr_001 = list(self.model.dsn1_1.parameters()) \
-                                + list(self.model.dsn1_2.parameters()) \
-                                + list(self.model.dsn2_1.parameters()) \
-                                + list(self.model.dsn2_2.parameters()) \
-                                + list(self.model.dsn3_1.parameters()) \
-                                + list(self.model.dsn3_2.parameters()) \
-                                + list(self.model.dsn3_3.parameters()) \
-                                + list(self.model.dsn4_1.parameters()) \
-                                + list(self.model.dsn4_2.parameters()) \
-                                + list(self.model.dsn4_3.parameters()) \
-                                + list(self.model.dsn5_1.parameters()) \
-                                + list(self.model.dsn5_2.parameters()) \
-                                + list(self.model.dsn5_3.parameters()) \
-                                + list(self.model.dsn1.parameters()) \
-                                + list(self.model.dsn2.parameters()) \
-                                + list(self.model.dsn3.parameters()) \
-                                + list(self.model.dsn4.parameters()) \
-                                + list(self.model.dsn5.parameters())
-                params_lr_0001 = self.model.new_score_weighting.parameters()
-            else:
-                params_lr_1 = list(self.model.conv1.parameters()) \
-                              + list(self.model.conv2.parameters()) \
-                              + list(self.model.conv3.parameters()) \
-                              + list(self.model.conv4.parameters())
-                params_lr_100 = self.model.conv5.parameters()
-                params_lr_001 = list(self.model.dsn1.parameters()) \
-                                + list(self.model.dsn2.parameters()) \
-                                + list(self.model.dsn3.parameters()) \
-                                + list(self.model.dsn4.parameters()) \
-                                + list(self.model.dsn5.parameters())
-                params_lr_0001 = self.model.new_score_weighting.parameters()
-
-            # self.lr_cof = [1, 100, 0.01, 0.001]
-            optim_paras_list = [{'params': params_lr_1},
-                                {'params': params_lr_100, 'lr': init_lr * self.lr_cof[1]},
-                                {'params': params_lr_001, 'lr': init_lr * self.lr_cof[2]},
-                                {'params': params_lr_0001, 'lr': init_lr * self.lr_cof[3]}
-                                ]
-            self.optim = torch.optim.Adam(optim_paras_list, lr=init_lr, weight_decay=2e-4)  # weight_decay=1e-4
-
-        elif self.cfg.TRAIN.update_method == 'Adam_except_vgg1-4':
-            optim_paras_list = params_lr_100 + params_lr_001 + params_lr_0001
-            self.optim = torch.optim.Adam(optim_paras_list, lr=init_lr)
 
         self.optim.zero_grad()
 
