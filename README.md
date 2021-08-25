@@ -131,5 +131,5 @@
 
 [1]. Our implementation is based on this project by [chongruo](https://github.com/chongruo/pytorch-HED), and we also refer to wonderful projects of [Liu](https://github.com/yun-liu/rcf) and [He](https://github.com/pkuCactus/BDCN). Thank you for their wonderful works and all contributors;
 
-[2]. When doing experiments, we also emailed [Liu](https://github.com/yun-liu/rcf) and [He](https://github.com/pkuCactus/BDCN). Thanks very much for their kind responses and help. 
+[2]. When doing experiments, we also emailed [Liu](https://github.com/yun-liu/rcf) and [He](https://github.com/pkuCactus/BDCN). Thanks very much for their kind responses and helpful advice. 
 
