@@ -79,7 +79,7 @@
    - submit your task;
 
      ```shell
-     HED_submit.sh
+     FCL_submit.sh
      ```
 
 5. **Evaluation**
