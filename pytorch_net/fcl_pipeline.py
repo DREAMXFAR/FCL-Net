@@ -14,10 +14,8 @@ from tensorboardX import SummaryWriter
 from dataset.BSD500 import *
 from models.HED import HED
 from models.FCL import FCL
-# from models.RCF_ablation import RCF
+# from models.FCL_ablation import FCL
 from models.BDCN import BDCN
-from models.RCF_bilateral_attention import RCF_bilateral_attention
-from models.NetModules import FuseLayer
 from utils import AverageMeter
 
 
