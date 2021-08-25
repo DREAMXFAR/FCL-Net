@@ -5,7 +5,7 @@ import torchvision.models as models
 import torch.nn.functional as F
 import numpy as np
 import yaml
-from attrdict import  AttrDict
+from attrdict import AttrDict
 
 
 class MSBlock(nn.Module):

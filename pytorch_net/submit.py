@@ -1,13 +1,11 @@
 import sys
-
-import os,pdb,time
+import os, pdb, time
 
 # os.environ['CUDA_VISIBLE_DEVICES']='0,2'
 
 #######################################################################################
-## relative to config
-
-config_file = 'standard_RCF.yaml'
+# set config files
+config_file = 'standard_FCL.yaml'
 
 #######################################################################################
 ckpt_dir = '../ckpt'

@@ -1,5 +1,5 @@
-NAME: 'BAN'
-# 'again_RCF_vgg16bn_Adam_bsds_woms_softmaxcls_lstmbu_resumePASCAL_800' #'RCF_vgg16_bn_savemodel'#'new_github_adam_lr1e-4_Aug_0.3_savemodel'
+NAME: 'BAN_model'
+
 MODEL:
     backbone: 'vgg16_bn'   #  'vgg16'(HED only) or 'vgg16_bn'(HED and RCF) or 'resnet50'(HED only)
     mode: 'RCF' # 'HED' OR 'RCF' or 'BDCN'

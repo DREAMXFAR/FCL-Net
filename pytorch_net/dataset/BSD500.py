@@ -8,8 +8,6 @@ import numpy as np
 import random
 import ssl
 
-import pdb
-
 
 class BSD500Dataset():
     def __init__(self, cfg):

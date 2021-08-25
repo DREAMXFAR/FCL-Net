@@ -13,15 +13,15 @@ from .NetModules import MSBlock, CBAM, ClsHead
 from .LSTM import ConvLSTMCell, ConvLSTMCell_v2
 
 
-class RCF(nn.Module):
+class FCL(nn.Module):
     def __init__(self, cfg, writer):
-        super(RCF, self).__init__()
+        super(FCL, self).__init__()
         
         self.cfg = cfg
         self.writer = writer
 
         ############################ Model ###################################
-        self.first_padding = nn.ReflectionPad2d(self.cfg.MODEL.first_pad) # padding left,right,top,bottom
+        self.first_padding = nn.ReflectionPad2d(self.cfg.MODEL.first_pad)  # padding left,right,top,bottom
 
         ### vgg16
         backbone_mode = self.cfg.MODEL.backbone
@@ -33,7 +33,7 @@ class RCF(nn.Module):
                 pre = torch.load('./models/vgg16_bn-6c64b313.pth')
                 vgg16.load_state_dict(pre)
         elif self.cfg.MODEL.backbone == 'vgg16_bn':
-            vgg16 = models.vgg16_bn(pretrained=False).cuda()  #实际训练中不能被注释
+            vgg16 = models.vgg16_bn(pretrained=False).cuda()
             if pretrained:
                 pre = torch.load('./models/vgg16_bn-6c64b313.pth')
                 vgg16.load_state_dict(pre)
@@ -231,23 +231,9 @@ class RCF(nn.Module):
             self.dsn5_up_cls = nn.ConvTranspose2d(1, 1, 16, stride=8)   
             self.other_layers += [self.dsn1_cls, self.dsn2_cls, self.dsn3_cls, self.dsn4_cls, self.dsn5_cls, 
                                   self.dsn2_up_cls, self.dsn3_up_cls, self.dsn4_up_cls, self.dsn5_up_cls]        
-            self.cls_head = ClsHead(5, maxmode=self.cfg.MODEL.cls_mode)  # max->softmax 1015 # softmax->max 1011
-            # { 2020-09-02        
-            self.new_score_weighting = nn.Conv2d(6, 1, 1)  # 0924
-            #self.new_score_weighting = nn.Conv2d(5, 1, 1)
-            #self.dsn1_bn = nn.BatchNorm2d(1)
-            #self.dsn2_bn = nn.BatchNorm2d(1)
-            #self.dsn3_bn = nn.BatchNorm2d(1)
-            #self.dsn4_bn = nn.BatchNorm2d(1)
-            #self.dsn5_bn = nn.BatchNorm2d(1)
-            # end }
-            
-            # { 2020-09-15
-            #self.avg_pool = nn.AdaptiveAvgPool2d(1)
-            #self.fc = nn.Conv2d(5, 5, 1, bias=False)
-            #self.relu = nn.ReLU()
-            #self.fc.weight.data.normal_(0, 0.1)
-            # end }
+            self.cls_head = ClsHead(5, maxmode=self.cfg.MODEL.cls_mode)
+
+            self.new_score_weighting = nn.Conv2d(6, 1, 1)
                     
         ############################ Layer Initialization ###################################
         if self.cfg.MODEL.upsample_layer == 'github':

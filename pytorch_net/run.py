@@ -4,7 +4,7 @@ import argparse
 import random
 import numpy
 
-from hed_pipeline import *
+from fcl_pipeline import *
 from bdcn_pipeline import *
 # from fpn_pipeline import *
 from fpn_bi_pipeline import *

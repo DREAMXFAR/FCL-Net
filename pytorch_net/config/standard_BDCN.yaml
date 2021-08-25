@@ -1,4 +1,4 @@
-NAME: 'BDCN_merge' #'RCF_vgg16_bn_savemodel'#'new_github_adam_lr1e-4_Aug_0.3_savemodel'
+NAME: 'BDCN_bsds_pascal'
 MODEL:
     backbone: 'vgg16_bn'   #  'vgg16'(HED only) or 'vgg16_bn'(HED and RCF) or 'resnet50'(HED only)
     mode: 'BDCN' # 'HED' OR 'RCF' or 'BDCN'

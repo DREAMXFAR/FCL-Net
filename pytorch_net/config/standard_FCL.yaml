@@ -1,11 +1,11 @@
 NAME: 'FCL_bsds_pascal'
-# 'again_RCF_vgg16bn_Adam_bsds_woms_softmaxcls_lstmbu_resumePASCAL_800' #'RCF_vgg16_bn_savemodel'#'new_github_adam_lr1e-4_Aug_0.3_savemodel'
+
 MODEL:
     backbone: 'vgg16_bn'   #  'vgg16'(HED only) or 'vgg16_bn'(HED and RCF) or 'resnet50'(HED only)
-    mode: 'RCF' # 'HED' OR 'RCF' or 'BDCN'
+    mode: 'FCL' # 'HED' OR 'RCF' or 'BDCN' or 'FCL'
     pretrained: True
     loss_balance_weight: True
-    loss_weight_list: [1, 1, 1, 1, 1, 1, 1] ## change dsn6 weight from 1->2 09-01 add dsn7
+    loss_weight_list: [0.2, 0.2, 0.2, 0.2, 0.2, 1, 1] ## change dsn6 weight from 1->2 09-01 add dsn7
     upsample_layer: 'deconv'  # 'deconv' or 'bilinear', 'github'
     interpolate_mode: 'bilinear'  # 'bilinear' or 'nearest' if upsample_layer=='bilinear'
     freeze_bn: True  # for batchnorm
@@ -29,9 +29,9 @@ MODEL:
     LSTM: False
     LSTM_bu: True
     LSTM_version: 'v1'
-    supervision: 'normal'  # normal
+    supervision: 'normal'
     
-    ClsHead: True  #2020-08-24
+    ClsHead: True
     cls_mode: 'softmax'
     
     change_conv5_dsn5: True
@@ -39,11 +39,10 @@ MODEL:
 TRAIN: 
     resume: False
     param_path: '/project/jhliu4/XWJ/HED/ckpt/standard_RCF/log/RCF_vgg16bn_Adam_pascalaug_softmaxcls_lstmbu_savemodel_Dec17_20-26-22/epoch_56.pth'
-    # '/project/jhliu4/XWJ/HED/ckpt/standard_RCF/log/RCF_vgg16bn_Adam_pascalaug_softmaxcls_lstmbu_savemodel_Dec17_20-26-22/epoch_56.pth'
     freeze_pretrained_param: False
     re_init_fuseweight: False
  
-    init_lr: 0.0001 #0.0001  # if resume 0.00001
+    init_lr: 0.0001  # if resume 0.00001
     update_method: "Adam"  # 'Adam' or 'SGD', 'Adam-sgd', 'meteorshowers', 'github'
     change_sgd_epoch: 6   # only for 'adam-sgd'
     change_sgd_lr: 0.0001     # only for 'adam-sgd'
@@ -51,8 +50,7 @@ TRAIN:
     fusion_train: False
     nepoch: 20
     lr_list: [10, 15]  # use 2020-08-27
-    lr_cof: [1, 100, 0.01, 0.001]  ## [1, 100, 0.01, 0.001]
-    #lr_cof: [1, 10, 10, 10]  ## [1, 100, 0.01, 0.001]
+    lr_cof: [1, 100, 0.01, 0.001]
     gamma: 1.1
 
     fixed_input: False

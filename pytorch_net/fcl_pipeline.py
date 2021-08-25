@@ -13,15 +13,15 @@ from tensorboardX import SummaryWriter
 
 from dataset.BSD500 import *
 from models.HED import HED
-# from models.RCF import RCF
-from models.RCF_ablation import RCF
+from models.FCL import FCL
+# from models.RCF_ablation import RCF
 from models.BDCN import BDCN
 from models.RCF_bilateral_attention import RCF_bilateral_attention
 from models.NetModules import FuseLayer
 from utils import AverageMeter
 
 
-class HEDPipeline():
+class FCLPipeline():
     def __init__(self, cfg):
 
         self.cfg = self.cfg_checker(cfg)
@@ -844,74 +844,3 @@ class HEDPipeline():
 
             self.save_mat(ms_list, img_filename, 0)
 
-    def test_merge(self,
-                   param_path=r'../ckpt/standard01/log/RCF_vgg16_bn_bsds_pascal_Adam_savemodel_Feb14_10-33-52/epoch_12.pth'):
-        # load model parameters
-        print('parameters:{}'.format(param_path.split('/')[-2:]))
-        pre = torch.load(param_path)  # , map_location=torch.device('cpu'))
-        self.model.load_state_dict(pre)
-
-        # set models mode equals 'eval'
-        self.model.eval()
-
-        print('---------Test MS----------')
-
-        # Forward
-        for ind, item in enumerate(self.data_test_loader):
-            (data, img_filename) = item
-            data = data.cuda()
-            print(img_filename)
-
-            img = data.cpu().numpy().squeeze()
-            height, width = data.shape[2:]
-            # scale_list = [0.5, 1, 1.5]
-            scale_list = [1]
-
-            # save multi-scale output
-            dsn1_ms = torch.zeros([1, 1, height, width]).cuda()
-            dsn2_ms = torch.zeros([1, 1, height, width]).cuda()
-            dsn3_ms = torch.zeros([1, 1, height, width]).cuda()
-            dsn4_ms = torch.zeros([1, 1, height, width]).cuda()
-            dsn5_ms = torch.zeros([1, 1, height, width]).cuda()
-            dsn6_ms = torch.zeros([1, 1, height, width]).cuda()
-            dsn7_ms = torch.zeros([1, 1, height, width]).cuda()
-            ms_list = [dsn1_ms, dsn2_ms, dsn3_ms, dsn4_ms, dsn5_ms, dsn6_ms, dsn7_ms]
-
-            for scl in scale_list:
-                print('-----scale:{}-----, data max:{}, data min:{}'.format(scl, torch.max(data), torch.min(data)))
-                img_scale = cv2.resize(img.transpose((1, 2, 0)), (0, 0), fx=scl, fy=scl, interpolation=cv2.INTER_LINEAR)
-                data_ms = torch.from_numpy(img_scale.transpose((2, 0, 1))).float().unsqueeze(0)
-                dsn1, dsn2, dsn3, dsn4, dsn5, dsn6, dsn7 = self.model(data_ms.cuda())  #
-                dsn_list = [dsn1, dsn2, dsn3, dsn4, dsn5, dsn6, dsn7]  # , dsn7
-
-                # get prediction normalized
-                if self.cfg.MODEL.loss_func_logits:
-                    for i in range(7):
-                        dsn_list[i] = torch.sigmoid(dsn_list[i])
-
-                # side outputs and fuse results
-                # for i in range(0, 6):
-                for i in range(0, 7):
-                    dsn_np = dsn_list[i].squeeze().cpu().data.numpy()
-                    dsn_resize = cv2.resize(dsn_np, (width, height), interpolation=cv2.INTER_LINEAR)
-                    dsn_t = torch.from_numpy(dsn_resize).cuda()
-                    ms_list[i] += dsn_t / len(scale_list)
-
-                # average results
-                avg_ms = torch.zeros([1, 1, height, width]).cuda()
-                avg_weight = [1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6]
-                # print('avg weight:\n{}'.format(fuse_weight))
-                for i, wi in zip(range(6), avg_weight):
-                    avg_ms += ms_list[i] * wi
-
-                # merge results
-                merge_ms = torch.zeros([1, 1, height, width]).cuda()
-                merge_ms = (avg_ms + ms_list[6]) / 2
-
-                ms_list.append(merge_ms)
-
-            # print('weight: ')
-            # print(self.model.new_score_weighting.weight)
-            # print(self.model.new_score_weighting.bias)  # is changing
-
-            self.save_mat(ms_list, img_filename, 0, test=True)

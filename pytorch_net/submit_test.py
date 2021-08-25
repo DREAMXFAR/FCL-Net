@@ -3,11 +3,8 @@ import os,pdb
 import time
 
 #######################################################################################
-## relative to config
-# config_file = 'standard_RCF_LSTM.yaml'
-config_file = 'standard_RCF_ms.yaml'
-# config_file = 'standard_BDCN.yaml'
-# config_file = 'standard_RCF_LSTM_CLS.yaml'
+# set config files
+config_file = 'standard_FCL.yaml'
 
 #######################################################################################
 ckpt_dir = '../ckpt'

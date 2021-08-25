@@ -3,7 +3,7 @@ import yaml
 import argparse 
 
 from dataset.BSD500 import BSD500Dataset
-from models.HED import HED
+from models.FCL import FCL
 
 
 ###############
@@ -27,7 +27,7 @@ print(cfg)
 ########################################
 
 
-model = HED(cfg)
+model = FCL(cfg)
 
 
 
