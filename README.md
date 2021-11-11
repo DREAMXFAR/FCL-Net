@@ -12,7 +12,7 @@
 
 ​    Integrating multi-scale predictions has become a mainstream paradigm in edge detection. However, most existing methods mainly focus on learning to effectively extract and fuse multi-scale features while ignoring the deficient learning capacity at fine-level branches, limiting the overall fusion performance. In light of this, we propose a novel **Fine-scale Corrective Learning Net (FCL-Net)** that exploits semantic information from deep layers to facilitate fine-scale feature learning. FCL-Net mainly consists of a **Top-down Attentional Guiding (TAG)** and **Pixel-level Weighting (PW) module**. The TAG adapts semantic attentional cues from coarse-scale prediction into guiding the fine-scale branches by learning a top-down LSTM. The PW module treats each spatial location's importance independently, promoting the fine-level branches to detect detailed edges with high confidence. We evaluate our method on three widely used datasets, BSDS500, Multicue and BIPED. Our approach significantly outperforms the baseline and achieves competitive ODS F-measure of 0.826 on BSDS500 benchmark.
 
-<img src="F:\myGitHub\release\FCL-Net\examples\architecture.jpg" alt="image" style="zoom:40%;" />
+<img src=".\examples\architecture.jpg" alt="image" style="zoom:40%;" />
 
 
 
