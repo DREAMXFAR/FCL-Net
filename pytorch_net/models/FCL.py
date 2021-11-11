@@ -13,7 +13,7 @@ from .NetModules import MSBlock, CBAM, ClsHead
 from .LSTM import ConvLSTMCell, ConvLSTMCell_v2
 
 
-class RCF(nn.Module):
+class FCL(nn.Module):
     def __init__(self, cfg, writer):
         super(RCF, self).__init__()
 

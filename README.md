@@ -1,12 +1,18 @@
-# FCL-Net
+#  [Neural Networks 2022] FCL-Net: Towards accurate edge detection via Fine-scale Corrective Learning
 
-> This is a pytorch implementation of our FCL-Net, 2021, version 1.0.
+> 2021-09-01  This is a pytorch implementation of our FCL-Net, 2021, version 1.0.
+>
+> 2021-11-11  Update paper information, and plan to add docker soon, version 2.0. 
+
+​	This is the implements of our work *FCL-Net: Towards accurate edge detection via Fine-scale Corrective Learning* in Pytorch. For more details, please refer to our [paper](https://www.sciencedirect.com/science/article/pii/S0893608021004135).
 
 
 
 ## Introduction
 
 ​    Integrating multi-scale predictions has become a mainstream paradigm in edge detection. However, most existing methods mainly focus on learning to effectively extract and fuse multi-scale features while ignoring the deficient learning capacity at fine-level branches, limiting the overall fusion performance. In light of this, we propose a novel **Fine-scale Corrective Learning Net (FCL-Net)** that exploits semantic information from deep layers to facilitate fine-scale feature learning. FCL-Net mainly consists of a **Top-down Attentional Guiding (TAG)** and **Pixel-level Weighting (PW) module**. The TAG adapts semantic attentional cues from coarse-scale prediction into guiding the fine-scale branches by learning a top-down LSTM. The PW module treats each spatial location's importance independently, promoting the fine-level branches to detect detailed edges with high confidence. We evaluate our method on three widely used datasets, BSDS500, Multicue and BIPED. Our approach significantly outperforms the baseline and achieves competitive ODS F-measure of 0.826 on BSDS500 benchmark.
+
+<img src="F:\myGitHub\release\FCL-Net\examples\architecture.jpg" alt="image" style="zoom:40%;" />
 
 
 
@@ -46,6 +52,7 @@
 - Pytorch>=0.3.1
 - Tensorboard
 - AttrDict
+- For more details about the environment of conda, please refer to `requirements.txt`.
 
 ### Train and Test the Network
 
@@ -79,7 +86,7 @@
    - submit your task;
 
      ```shell
-     FCL_submit.sh
+     sbatch FCL_submit.sh
      ```
 
 5. **Evaluation**
@@ -104,6 +111,10 @@
    
    > Password for baiduyun: `repr` ;
 
+### Docker
+
+- [ ] The Docker-file for testing purposes will be available soon.
+
 
 
 ## Our Results for Comparison
@@ -124,6 +135,24 @@
 |            0.2, 0.4, 0.6, 0.8, 1.0, 1.0, 1.0             |   0.813   |   0.831   |
 |            1.0, 0.8, 0.6, 0.4, 0.2, 1.0, 1.0             |   0.814   |   0.831   |
 |            1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0             |   0.813   |   0.832   |
+
+
+
+## Citation
+
+```bibtext
+@article{XUAN2022248,
+    title = {FCL-Net: Towards accurate edge detection via Fine-scale Corrective Learning},
+    author = {Wenjie Xuan and Shaoli Huang and Juhua Liu and Bo Du},
+    journal = {Neural Networks},
+    volume = {145},
+    pages = {248-259},
+    year = {2022},
+    issn = {0893-6080},
+    doi = {https://doi.org/10.1016/j.neunet.2021.10.022},
+    url = {https://www.sciencedirect.com/science/article/pii/S0893608021004135},
+}
+```
 
 
 
