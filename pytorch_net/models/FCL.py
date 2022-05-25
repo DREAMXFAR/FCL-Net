@@ -15,7 +15,7 @@ from .LSTM import ConvLSTMCell, ConvLSTMCell_v2
 
 class FCL(nn.Module):
     def __init__(self, cfg, writer):
-        super(RCF, self).__init__()
+        super(FCL, self).__init__()
 
         self.cfg = cfg
         self.writer = writer
@@ -797,7 +797,7 @@ class FCL(nn.Module):
         """
         Override the default train() to freeze the BN parameters
         """
-        super(RCF, self).train(mode)
+        super(FCL, self).train(mode)
 
         contain_bn_layers = [self.conv1_1, self.conv1_2,
                              self.conv2_1, self.conv2_2,

@@ -53,11 +53,11 @@ class BDCNPipeline():
         # print(self.model) #check the parameters of the model
         #  loss function
         if self.cfg.MODEL.loss_func_logits:
-            self.loss_function = F.binary_cross_entropy_with_logits
+            self.loss_function = torch.nn.functional.binary_cross_entropy_with_logits
         else:
             # self.loss_function = re_Dice_Loss()
             # self.loss_function = SoftDiceLoss()
-            self.loss_function = F.binary_cross_entropy
+            self.loss_function = torch.nn.functional.binary_cross_entropy
 
         # ######################## Optimizer ################################################3
         init_lr = self.cfg.TRAIN.init_lr

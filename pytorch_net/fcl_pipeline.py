@@ -62,9 +62,9 @@ class FCLPipeline():
 
         ### loss function
         if self.cfg.MODEL.loss_func_logits:
-            self.loss_function = F.binary_cross_entropy_with_logits
+            self.loss_function = torch.nn.functional.binary_cross_entropy_with_logits
         else:
-            self.loss_function = F.binary_cross_entropy
+            self.loss_function = torch.nn.functional.binary_cross_entropy
 
         # ######################## Optimizer ################################################3
         init_lr = self.cfg.TRAIN.init_lr
@@ -466,17 +466,17 @@ class FCLPipeline():
             return
 
         # conv5 params
-        conv5_index = -3 if self.cfg.MODEL.backbone == 'vgg16_bn' else -2
-        self.writer.add_histogram('conv5/a_weight: ', self.model.conv5[conv5_index].weight.clone().cpu().data.numpy(),
-                                  cur_epoch)
-        self.writer.add_histogram('conv5/a_bias: ', self.model.conv5[conv5_index].bias.clone().cpu().data.numpy(),
-                                  cur_epoch)
-        self.writer.add_histogram('conv5/b_weight_grad: ',
-                                  self.model.conv5[conv5_index].weight.grad.clone().cpu().data.numpy(), cur_epoch)
-
-        self.writer.add_histogram('conv5/b_bias_grad: ',
-                                  self.model.conv5[conv5_index].bias.grad.clone().cpu().data.numpy(), cur_epoch)
-        self.writer.add_histogram('conv5/c_output: ', self.model.conv5_output.clone().cpu().data.numpy(), cur_epoch)
+        # conv5_index = -3 if self.cfg.MODEL.backbone == 'vgg16_bn' else -2
+        # self.writer.add_histogram('conv5/a_weight: ', self.model.conv5[conv5_index].weight.clone().cpu().data.numpy(),
+        #                           cur_epoch)
+        # self.writer.add_histogram('conv5/a_bias: ', self.model.conv5[conv5_index].bias.clone().cpu().data.numpy(),
+        #                           cur_epoch)
+        # self.writer.add_histogram('conv5/b_weight_grad: ',
+        #                           self.model.conv5[conv5_index].weight.grad.clone().cpu().data.numpy(), cur_epoch)
+        #
+        # self.writer.add_histogram('conv5/b_bias_grad: ',
+        #                           self.model.conv5[conv5_index].bias.grad.clone().cpu().data.numpy(), cur_epoch)
+        # self.writer.add_histogram('conv5/c_output: ', self.model.conv5_output.clone().cpu().data.numpy(), cur_epoch)
 
     def edge_weight(self, target, pred=None, balance=1.1, gamma=2):
         h, w = target.shape[2:]

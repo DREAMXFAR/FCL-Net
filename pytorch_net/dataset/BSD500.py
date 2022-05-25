@@ -59,9 +59,13 @@ class BSD500Dataset():
                                                   contrast = self.cfg.DATA.AUG.contrast,
                                                   saturation = self.cfg.DATA.AUG.saturation,
                                                   hue = self.cfg.DATA.AUG.hue )
-            color_jitter_transform = color_jitter.get_params(color_jitter.brightness, color_jitter.contrast,
-                                                             color_jitter.saturation, color_jitter.hue)
-            img = color_jitter_transform(img)
+            # for old version pytorch
+            # color_jitter_transform = color_jitter.get_params(color_jitter.brightness, color_jitter.contrast,
+            #                                                  color_jitter.saturation, color_jitter.hue)
+            # img = color_jitter_transform(img)
+
+            color_jitter.get_params(color_jitter.brightness, color_jitter.contrast, color_jitter.saturation, color_jitter.hue)
+            img = color_jitter(img)
 
         if self.cfg.DATA.AUG.AdjustGamma:
             if random.random() < 0.5:
