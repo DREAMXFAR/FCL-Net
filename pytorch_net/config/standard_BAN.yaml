@@ -2,7 +2,7 @@ NAME: 'BAN_model'
 
 MODEL:
     backbone: 'vgg16_bn'   #  'vgg16'(HED only) or 'vgg16_bn'(HED and RCF) or 'resnet50'(HED only)
-    mode: 'RCF' # 'HED' OR 'RCF' or 'BDCN'
+    mode: 'BAN' # 'HED' OR 'RCF' or 'BDCN'
     pretrained: False # True
     loss_balance_weight: True
     loss_weight_list: [1, 1, 1, 1, 1, 1, 1] ## change dsn6 weight from 1->2 09-01 add dsn7

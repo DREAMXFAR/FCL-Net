@@ -56,6 +56,9 @@ class FCLPipeline():
             self.model = FCL(self.cfg, self.writer)
         elif self.cfg.MODEL.mode == 'BDCN':
             self.model = BDCN(self.cfg, self.writer)
+        elif self.cfg.MODEL.mode == 'BAN':
+            raise Exception("Not support BAN for training now.")
+            # self.model = BAN(self.cfg, self.writer)
 
         self.model = self.model.cuda()
         # print(self.model)  # check the parameters of the model
